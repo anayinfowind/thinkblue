@@ -29,5 +29,5 @@ $definitions = array(
     'imagearea' => array(
         'mode' => cache_store::MODE_APPLICATION,
         'staticacceleration' => true,
-    )
+    ),
 );

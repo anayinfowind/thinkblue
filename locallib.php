@@ -108,6 +108,7 @@ function theme_thinkblue_get_random_loginbackgroundimage_class() {
  */
 function theme_thinkblue_get_loginbackgroundimage_text() {
     // Get the random number.
+    $leeloosettings = theme_thinkblue_general_leeloosettings();
     $number = theme_thinkblue_get_random_loginbackgroundimage_number();
 
     // Only search for the text if there's a background image.
@@ -120,7 +121,7 @@ function theme_thinkblue_get_loginbackgroundimage_text() {
         $filename = array_pop($file)->get_filename();
 
         // Get the config for loginbackgroundimagetext and make array out of the lines.
-        $lines = explode("\n", get_config('theme_thinkblue', 'loginbackgroundimagetext'));
+        $lines = explode("\n", $leeloosettings->design_settings->loginbackgroundimagetext);
 
         // Proceed the lines.
         foreach ($lines as $line) {
@@ -167,6 +168,7 @@ function theme_thinkblue_get_loginbackgroundimage_scss() {
  * @return array
  */
 function theme_thinkblue_get_imageareacontent() {
+    $leeloosettings = theme_thinkblue_general_leeloosettings();
     // Get cache.
     $themeboostcampuscache = cache::make('theme_thinkblue', 'imagearea');
     // If cache is filled, return the cache.
@@ -186,7 +188,7 @@ function theme_thinkblue_get_imageareacontent() {
         if (!empty($files)) {
             // Get the content from the setting imageareaitemsattributes and explode it to an array by the delimiter "new line".
             // The string contains: the image identifier (uploaded file name) and the corresponding link URL.
-            $lines = explode("\n", get_config('theme_thinkblue', 'imageareaitemsattributes'));
+            $lines = explode("\n", $leeloosettings->additional_layout_settings->imageareaitemsattributes);
             // Parse item settings.
             foreach ($lines as $line) {
                 $line = trim($line);
@@ -205,16 +207,16 @@ function theme_thinkblue_get_imageareacontent() {
                             $setting = trim($setting);
                             if (!empty($setting)) {
                                 switch ($i) {
-                                    // Check for the first param: link.
-                                    case 1:
-                                        // The name of the image is the key for the URL that will be set.
-                                        $links[$settings[0]] = $settings[1];
-                                        break;
-                                    // Check for the second param: alt text.
-                                    case 2:
-                                        // The name of the image is the key for the alt text that will be set.
-                                        $alttexts[$settings[0]] = $settings[2];
-                                        break;
+                                // Check for the first param: link.
+                                case 1:
+                                    // The name of the image is the key for the URL that will be set.
+                                    $links[$settings[0]] = $settings[1];
+                                    break;
+                                // Check for the second param: alt text.
+                                case 2:
+                                    // The name of the image is the key for the alt text that will be set.
+                                    $alttexts[$settings[0]] = $settings[2];
+                                    break;
                                 }
                             }
                         }
@@ -269,44 +271,51 @@ function theme_thinkblue_get_imageareacontent() {
  */
 function theme_thinkblue_process_flatnav(flat_navigation $flatnav) {
     global $USER;
+    $leeloosettings = theme_thinkblue_general_leeloosettings();
     // If the setting defaulthomepageontop is enabled.
-    if (get_config('theme_thinkblue', 'defaulthomepageontop') == 'yes') {
-        // Only proceed processing if we are in a course context.
-        if (($coursehomenode = $flatnav->find('coursehome', global_navigation::TYPE_CUSTOM)) != false) {
-            // If the site home is set as the default homepage by the admin.
-            if (get_config('core', 'defaulthomepage') == HOMEPAGE_SITE) {
-                // Return the modified flat_navigation.
-                $flatnavreturn = theme_thinkblue_set_node_on_top($flatnav, 'home', $coursehomenode);
-            } else if (get_config('core', 'defaulthomepage') == HOMEPAGE_MY) {
-                // If the dashboard is set as the default homepage
-                // by the admin.
-                // Return the modified flat_navigation.
-                $flatnavreturn = theme_thinkblue_set_node_on_top($flatnav, 'myhome', $coursehomenode);
-            } else if (get_config('core', 'defaulthomepage') == HOMEPAGE_USER) {
-                // If the admin defined that the user can set
-                // the default homepage for himself.
-                // Site home.
-                if (get_user_preferences('user_home_page_preference') == 0) {
-                    // Return the modified flat_navigtation.
+    if (isset($leeloosettings->additional_layout_settings->defaulthomepageontop) && isset($leeloosettings->additional_layout_settings->defaulthomepageontop) != '') {
+        if ($leeloosettings->additional_layout_settings->defaulthomepageontop == 1) {
+            // Only proceed processing if we are in a course context.
+            if (($coursehomenode = $flatnav->find('coursehome', global_navigation::TYPE_CUSTOM)) != false) {
+                // If the site home is set as the default homepage by the admin.
+                if (get_config('core', 'defaulthomepage') == HOMEPAGE_SITE) {
+                    // Return the modified flat_navigation.
                     $flatnavreturn = theme_thinkblue_set_node_on_top($flatnav, 'home', $coursehomenode);
-                } else if (get_user_preferences('user_home_page_preference') == 1 || // Dashboard.
-                    get_user_preferences('user_home_page_preference') === false) {
-                    // If no user preference is set,
-                    // use the default value of core setting default homepage (Dashboard).
-                    // Return the modified flat_navigtation.
+                } else if (get_config('core', 'defaulthomepage') == HOMEPAGE_MY) {
+                    // If the dashboard is set as the default homepage
+                    // by the admin.
+                    // Return the modified flat_navigation.
                     $flatnavreturn = theme_thinkblue_set_node_on_top($flatnav, 'myhome', $coursehomenode);
+                } else if (get_config('core', 'defaulthomepage') == HOMEPAGE_USER) {
+                    // If the admin defined that the user can set
+                    // the default homepage for himself.
+                    // Site home.
+                    if (get_user_preferences('user_home_page_preference') == 0) {
+                        // Return the modified flat_navigtation.
+                        $flatnavreturn = theme_thinkblue_set_node_on_top($flatnav, 'home', $coursehomenode);
+                    } else if (get_user_preferences('user_home_page_preference') == 1 || // Dashboard.
+                        get_user_preferences('user_home_page_preference') === false) {
+                        // If no user preference is set,
+                        // use the default value of core setting default homepage (Dashboard).
+                        // Return the modified flat_navigtation.
+                        $flatnavreturn = theme_thinkblue_set_node_on_top($flatnav, 'myhome', $coursehomenode);
+                    } else {
+                        // Should not happen.
+                        // Return the passed flat navigation without changes.
+                        $flatnavreturn = $flatnav;
+                    }
                 } else {
                     // Should not happen.
                     // Return the passed flat navigation without changes.
                     $flatnavreturn = $flatnav;
                 }
             } else {
-                // Should not happen.
+                // Not in course context.
                 // Return the passed flat navigation without changes.
                 $flatnavreturn = $flatnav;
             }
         } else {
-            // Not in course context.
+            // Defaulthomepageontop not enabled.
             // Return the passed flat navigation without changes.
             $flatnavreturn = $flatnav;
         }
@@ -356,10 +365,11 @@ function theme_thinkblue_set_node_on_top(flat_navigation $flatnav, $nodename, $b
  */
 function theme_thinkblue_get_incourse_settings() {
     global $COURSE, $PAGE;
+    $leeloosettings = theme_thinkblue_general_leeloosettings();
     // Initialize the node with false to prevent problems on pages that do not have a courseadmin node.
     $node = false;
     // If setting showsettingsincourse is enabled.
-    if (get_config('theme_thinkblue', 'showsettingsincourse') == 'yes') {
+    if ($leeloosettings->course_layout_settings->showsettingsincourse == 1) {
         // Only search for the courseadmin node if we are within a course or a module context.
         if ($PAGE->context->contextlevel == CONTEXT_COURSE || $PAGE->context->contextlevel == CONTEXT_MODULE) {
             // Get the courseadmin node for the current page.
@@ -368,8 +378,8 @@ function theme_thinkblue_get_incourse_settings() {
             if (!empty($node)) {
                 // If the setting 'incoursesettingsswitchtoroleposition' is set either set to the option 'yes'
                 // or to the option 'both', then add these to the $node.
-                if (((get_config('theme_thinkblue', 'incoursesettingsswitchtoroleposition') == 'yes') ||
-                    (get_config('theme_thinkblue', 'incoursesettingsswitchtoroleposition') == 'both'))
+                if ((($leeloosettings->course_layout_settings->incoursesettingsswitchtoroleposition == 'yes') ||
+                    ($leeloosettings->course_layout_settings->incoursesettingsswitchtoroleposition == 'both'))
                     && !is_role_switched($COURSE->id)) {
                     // Build switch role link
                     // We could only access the existing menu item by creating the user menu and traversing it.
@@ -413,7 +423,8 @@ function theme_thinkblue_get_incourse_activity_settings() {
     $context = $PAGE->context;
     $node = false;
     // If setting showsettingsincourse is enabled.
-    if (get_config('theme_thinkblue', 'showsettingsincourse') == 'yes') {
+    $leeloosettings = theme_thinkblue_general_leeloosettings();
+    if ($leeloosettings->course_layout_settings->showsettingsincourse == 1) {
         // Settings belonging to activity or resources.
         if ($context->contextlevel == CONTEXT_MODULE) {
             $node = $PAGE->settingsnav->find('modulesettings', navigation_node::TYPE_SETTING);
@@ -455,4 +466,100 @@ function theme_thinkblue_get_course_guest_access_hint($courseid) {
     }
 
     return $html;
+}
+
+/**
+ * Get settings from Leeloo LXP.
+ */
+function theme_thinkblue_general_leeloosettings() {
+    $leeloolxplicense = get_config('theme_thinkblue')->license;
+    $settingsjson = get_config('theme_thinkblue')->settingsjson;
+    $resposedata = json_decode(base64_decode($settingsjson));
+    return $resposedata->data;
+}
+
+/**
+ * Get settings from Leeloo LXP.
+ * @param int $courseid The course ID.
+ */
+function theme_thinkblue_coursedata($courseid) {
+    global $CFG;
+    require_once($CFG->dirroot . '/lib/filelib.php');
+    $leeloolxplicense = get_config('theme_thinkblue')->license;
+
+    $url = 'https://leeloolxp.com/api_moodle.php/?action=page_info';
+    $postdata = array('license_key' => $leeloolxplicense);
+
+    $curl = new curl;
+
+    $options = array(
+        'CURLOPT_RETURNTRANSFER' => true,
+        'CURLOPT_HEADER' => false,
+        'CURLOPT_POST' => count($postdata),
+    );
+
+    if (!$output = $curl->post($url, $postdata, $options)) {
+        return get_string('nolicense', 'theme_thinkblue');
+    }
+
+    $infoleeloolxp = json_decode($output);
+
+    if ($infoleeloolxp->status != 'false') {
+        $leeloolxpurl = $infoleeloolxp->data->install_url;
+    } else {
+        return get_string('nolicense', 'theme_thinkblue');
+    }
+
+    $url = $leeloolxpurl . '/admin/course/get_course_theme_data/' . $courseid;
+
+    $postdata = array('license_key' => $leeloolxplicense);
+
+    $curl = new curl;
+
+    $options = array(
+        'CURLOPT_RETURNTRANSFER' => true,
+        'CURLOPT_HEADER' => false,
+        'CURLOPT_POST' => count($postdata),
+    );
+
+    if (!$output = $curl->post($url, $postdata, $options)) {
+        return get_string('nolicense', 'theme_thinkblue');
+    }
+
+    $resposedata = json_decode($output);
+    return $resposedata->data;
+}
+
+/**
+ * Fetch and Update Configration From L
+ */
+function updateconfthinkblue() {
+    $leeloolxplicense = get_config('theme_thinkblue')->license;
+
+    $url = 'https://leeloolxp.com/api_moodle.php/?action=page_info';
+    $postdata = array('license_key' => $leeloolxplicense);
+    $curl = new curl;
+    $options = array(
+        'CURLOPT_RETURNTRANSFER' => true,
+        'CURLOPT_HEADER' => false,
+        'CURLOPT_POST' => count($postdata),
+    );
+    if (!$output = $curl->post($url, $postdata, $options)) {
+    }
+    $infoleeloolxp = json_decode($output);
+    if ($infoleeloolxp->status != 'false') {
+        $leeloolxpurl = $infoleeloolxp->data->install_url;
+    } else {
+    }
+    $url = $leeloolxpurl . '/admin/Theme_setup/get_general_settings';
+    $postdata = array('license_key' => $leeloolxplicense);
+    $curl = new curl;
+    $options = array(
+        'CURLOPT_RETURNTRANSFER' => true,
+        'CURLOPT_HEADER' => false,
+        'CURLOPT_POST' => count($postdata),
+    );
+    if (!$output = $curl->post($url, $postdata, $options)) {
+    }
+    set_config('settingsjson', base64_encode($output), 'theme_thinkblue');
 }

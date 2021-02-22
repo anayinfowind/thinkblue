@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 // GENERAL.
 $string['pluginname'] = 'Leeloo LXP';
-$string['choosereadme'] = 'Theme Leeloo LXP is a child theme to be used on university campuses.';
+$string['choosereadme'] = 'Theme Leeloo LXP is a complete solution for your Moodle.';
 
 // SETTINGS.
 $string['configtitle'] = 'Leeloo LXP settings';
@@ -103,7 +103,6 @@ $string['incoursesettingsswitchtorolesettingjustcourse'] = 'Just in the course s
 $string['incoursesettingsswitchtorolesettingboth'] = 'In both places: in the user menu and in the course settings';
 $string['incoursesettingsswitchtorolepositionsetting_desc'] = 'With this setting you can choose the place where the information to which role a user has switched is being displayed. If set to \'Just in the user menu\' (default value), the role information will be displayed right beneath the user\'s name in the user menu (like in theme Boost). If set to \'Just in the course settings\', this information - together with a link to switch back - will be displayed beneath the course, as this functionality is course related. If set to \'Both in the user menu and in the course settings\' it will be shown in both places.';
 
-
 // Footer layout settings.
 $string['footerlayoutsettings'] = 'Footer Layout Settings';
 // ...Footer blocks.
@@ -118,6 +117,8 @@ $string['region-footer-left'] = 'Footer (left)';
 $string['region-footer-middle'] = 'Footer (middle)';
 $string['region-footer-right'] = 'Footer (right)';
 $string['region-side-pre'] = 'Right';
+$string['region-content'] = 'Below Content';
+$string['region-abovecontent'] = 'Above Content';
 // ...Hide footer links.
 $string['footerlinksheadingsetting'] = 'Default footer links';
 $string['footerlinksheadingsetting_desc'] = 'Moodle provides some default links in the footer: Link to the Moodle docs, login information, and a link to the webpage start. <br/> With the following three settings you can decide if you want to hide specific links because you think that your users won\'t need them in your instance.';
@@ -130,7 +131,6 @@ $string['footerhideusertourslinksetting'] = 'Hide link to reset the user tour';
 $string['hidefooterheadingsetting'] = 'Hiding the footer';
 $string['hidefooteronloginpagesetting'] = 'Hiding the footer on the login page';
 $string['hidefooteronloginpagesetting_desc'] = 'By enabling this setting you can hide the footer on the login page. Please note, that this will only hide the footer section, not the footnote section (if used).';
-
 
 // Additional layout setting.
 $string['additionallayoutsettings'] = 'Additional Layout Settings';
@@ -241,3 +241,21 @@ $string['region-side-pre'] = 'Right';
 $string['classes'] = 'Classes';
 $string['entries'] = 'Entries';
 $string['comments'] = 'Comments';
+
+$string['nolicense'] = 'Invalid Leeloo LXP License ID';
+$string['license'] = 'Leeloo LXP License ID';
+
+$string['hours'] = 'hours';
+$string['videoslessons'] = 'videos lessons';
+$string['modules'] = 'modules';
+$string['learningactivities'] = 'learning activities';
+$string['aboutcourse'] = 'About this course';
+$string['courseobjective'] = 'Course objectives';
+$string['send'] = 'Send';
+$string['courseoverview'] = 'Course overview';
+$string['coursesummary'] = 'Course Summary';
+$string['contactinst'] = 'Contact instructor';
+$string['subject'] = 'Subject';
+$string['message'] = 'Message';
+$string['enrollnow'] = 'Enroll Now';
+$string['userenrolled'] = 'You are already Enrolled.';

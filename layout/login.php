@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/theme/thinkblue/locallib.php');
-
+$leeloosettings = theme_thinkblue_general_leeloosettings();
 $bodyattributes = $OUTPUT->body_attributes();
 $loginbackgroundimagetext = theme_thinkblue_get_loginbackgroundimage_text();
 
@@ -34,19 +34,20 @@ $templatecontext = [
     'sitename' => format_string($SITE->shortname, true, ['context' => context_course::instance(SITEID), "escape" => false]),
     'output' => $OUTPUT,
     'bodyattributes' => $bodyattributes,
-    'loginbackgroundimagetext' => $loginbackgroundimagetext
+    'loginbackgroundimagetext' => $loginbackgroundimagetext,
 ];
 
 // MODIFICATION START: Handle additional layout elements.
 // The output buffer is needed to render the additional layout elements now without outputting them to the page directly.
 ob_start();
-
 // Include own layout file for the footnote region.
 // The theme_boost/login template already renders the standard footer.
 // The footer blocks and the image area are currently not shown on the login page.
 // Here, we will add the footnote only.
 // Get footnote config.
-$footnote = get_config('theme_thinkblue', 'footnote');
+
+$footnote = @$leeloosettings->additional_layout_settings->footnote;
+
 if (!empty($footnote)) {
     // Add footnote layout file.
     require_once(__DIR__ . '/includes/footnote.php');
@@ -54,17 +55,18 @@ if (!empty($footnote)) {
 
 // Get output buffer.
 $pagebottomelements = ob_get_clean();
-
 // If there isn't anything in the buffer, set the additional layouts string to an empty string to avoid problems later on.
 if ($pagebottomelements == false) {
     $pagebottomelements = '';
 }
+
 // Add the additional layouts to the template context.
 $templatecontext['pagebottomelements'] = $pagebottomelements;
-
 // Render own template.
 echo $OUTPUT->render_from_template('theme_thinkblue/login', $templatecontext);
 // MODIFICATION END.
+
 /* ORIGINAL START.
+
 echo $OUTPUT->render_from_template('theme_boost/login', $templatecontext);
 ORIGINAL END. */

@@ -14,24 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Theme Think Blue - Upgrade script
- *
- * @package    theme_thinkblue
- * @copyright  2020 Leeloo LXP (https://leeloolxp.com)
- * @author     Leeloo LXP <info@leeloolxp.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-defined('MOODLE_INTERNAL') || die;
-
-/**
- * Function to upgrade theme_thinkblue
- * @param int $oldversion the version we are upgrading from
- * @return bool result
- */
-function xmldb_theme_thinkblue_upgrade($oldversion) {
-    global $DB;
-
-    return true;
-}
+$to = $_REQUEST['teacheremail'];
+$subject = 'Enquiry :- ' . $_REQUEST['subject'];
+$txt = $_REQUEST['message'];
+$headers = "From: " . $_REQUEST['useremail'];
+mail($to, $subject, $txt, $headers);
+?>

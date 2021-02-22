@@ -15,27 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Theme Think Blue - Layout file for footnote.
+ * Moodle Get settings from L
  *
  * @package    theme_thinkblue
  * @copyright  2020 Leeloo LXP (https://leeloolxp.com)
  * @author     Leeloo LXP <info@leeloolxp.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+require('../../config.php');
 
+require_once($CFG->libdir . '/filelib.php');
 require_once($CFG->dirroot . '/theme/thinkblue/locallib.php');
-$leeloosettings = theme_thinkblue_general_leeloosettings();
-
-$footnotesetting = @$leeloosettings->additional_layout_settings->footnote;
-
-// Only proceed if text area does not only contains empty tags.
-if (!html_is_blank($footnotesetting)) {
-    // Use format_string function to enable multilanguage filtering.
-    $footnotesetting = format_text($footnotesetting);
-
-    $templatecontext['footnotesetting'] = $footnotesetting;
-
-    echo $OUTPUT->render_from_template('theme_thinkblue/footnote', $templatecontext);
-}
+updateconfthinkblue();
